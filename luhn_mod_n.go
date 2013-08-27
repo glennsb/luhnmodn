@@ -1,7 +1,6 @@
 package luhnmodn
 
 import (
-    "bytes"
     "fmt"
     "strconv"
 )
@@ -31,17 +30,15 @@ func CheckDigit(number string, base int) (digit int) {
 }
 
 func Checksummed(number string, base int) (check string) {
-    var buffer bytes.Buffer
-    buffer.WriteString(number)
-    buffer.WriteString(strconv.FormatInt(int64(CheckDigit(number, base)), base))
-    return buffer.String()
+    return fmt.Sprintf("%s%d",number,CheckDigit(number, base))
 }
 
-func Valid(number string, base int) (valid bool) {
+func Valid(number string, base int) (valid bool, err error) {
     valid = false
     given_digit, err := strconv.ParseInt(number[len(number)-1:len(number)], base, 64)
     if err != nil {
         fmt.Println(err)
+        return false, err
     }
-    return int64(CheckDigit(number[:len(number)-1], base)) == given_digit
+    return (int64(CheckDigit(number[:len(number)-1], base)) == given_digit), nil
 }
